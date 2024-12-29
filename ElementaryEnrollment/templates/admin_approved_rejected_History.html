@@ -1,0 +1,180 @@
+{% extends "admin_template.html" %}
+
+{% block title %}History of Accounts{% endblock %}
+
+{% block styles %}
+<style>
+    /* Page-specific styling */
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        opacity: 0; /* Initial hidden state for fade-in effect */
+        transform: translateY(20px); /* Optional slide-up effect */
+        transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for fade and slide */
+    }
+    .container.fade-in {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Reset slide effect */
+    }
+    h3 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .controls-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .search-bar { flex: 1; }
+    input[type="text"] {
+        width: 200px;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .filter-dropdown {
+        margin-left: 20px;
+    }
+    select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    .status-approved { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .back-btn, .small-btn {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+    }
+    .back-btn:hover, .small-btn:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <h3>History of Accounts</h3>
+
+    <!-- Controls container for search and filter -->
+    <div class="controls-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search for names..." onkeyup="searchTable()">
+        <select id="statusFilter" class="filter-dropdown" onchange="filterByStatus()">
+            <option value="all">All</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+        </select>
+    </div>
+
+    <h2>Accounts</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+        </tr>
+        {% for account in accounts %}
+        <tr>
+            <td>{{ account.first_name }} {{ account.last_name }}</td>
+            <td>{{ account.email }}</td>
+            <td>
+                {% if account.is_approved == True %}
+                    <span class="status-approved">Approved</span>
+                {% elif account.is_approved == False %}
+                    <span class="status-rejected">Rejected</span>
+                {% else %}
+                    Pending
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No accounts found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <!-- Buttons for Back and Deleted Accounts History -->
+    <div class="buttons">
+        <a href="{% url 'admin_dashboard' %}" class="back-btn">Back</a>
+        <a href="{% url 'admin_deleted_accounts_history' %}" class="small-btn">Deleted Accounts History</a>
+    </div>
+</div>
+
+<script>
+    // Fade-in effect for the container on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-in'); // Trigger the fade-in effect
+    });
+
+    // Search functionality for filtering names
+    function searchTable() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toUpperCase();
+        const rows = document.querySelectorAll("#approvedRejectedTable tbody tr");
+
+        rows.forEach(row => {
+            const nameCell = row.getElementsByTagName("td")[0];
+            if (nameCell) {
+                const txtValue = nameCell.textContent || nameCell.innerText;
+                row.style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        });
+    }
+
+    // Filter by status
+    function filterByStatus() {
+        const filter = document.getElementById("statusFilter").value;
+        const rows = document.querySelectorAll("#approvedRejectedTable tbody tr");
+
+        rows.forEach(row => {
+            const statusCell = row.getElementsByTagName("td")[3];
+            if (statusCell) {
+                const status = statusCell.textContent.toLowerCase();
+                if (filter === "all" || status === filter) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

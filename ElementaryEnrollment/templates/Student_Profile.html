@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+
+</head>
+<body>
+    {% extends 'student_template.html' %}
+
+    {% block title %}Student Profile{% endblock %}
+
+    {% block content %}
+
+    <div class="profile-container">
+        <h2>Profile</h2>
+        {% if student_data.error %}
+            <p>{{ student_data.error }}</p>
+        {% else %}
+            <p><span class="label">Student ID:</span> <span class="value">{{ student_data.student_id }}</span></p>
+            <p><span class="label">Name:</span> <span class="value">{{ student_data.name }}</span></p>
+            <p><span class="label">Date of Birth:</span> <span class="value">{{ student_data.birth_date }}</span></p>
+            <p><span class="label">Sex:</span> <span class="value">{{ student_data.sex }}</span></p>
+            <p><span class="label">Email:</span> <span class="value">{{ student_data.email }}</span></p>
+            <p><span class="label">Address:</span> <span class="value">{{ student_data.address }}</span></p>
+        {% endif %}
+        <div class="button-container">
+            <a href="{% url 'edit_profile' student_data.id %}" class="btn-edit">Edit Profile</a>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

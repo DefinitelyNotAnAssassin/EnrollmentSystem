@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        /* CSS styles copied from student_template.html */
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to top, #fff4f4, #ffd6d6, #ff0707);
+            background-size: 100% 300%;
+            background-repeat: no-repeat;
+        }
+        .container {
+            padding: 20px;
+        }
+        .profile-container, .account-container, .requirements-container, .schedule-container,.status-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: rgb(226, 124, 124);
+            padding: 10px;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .header {
+            background-color: #d13b3b;
+            color: rgb(26, 26, 26);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .greeting {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-size: 18px;
+        }
+        .logout {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .logout a {
+            font-weight: bold;
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            background-color: #00e1ff;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+        .logout a:hover {
+            background-color: #1100ff;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #640f00;
+            padding: 10px 0;
+        }
+        .nav a {
+            font-weight: bold;
+            color: rgb(248, 248, 248);
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+        .nav a:hover {
+            background-color: #ff6c6c;
+            border-radius: 4px;
+        }
+        
+        /* Styling for Profile Labels and Values */
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+            color: #ffffff;
+            background-color: #af5757;
+            padding: 5px;
+            border-radius: 4px; 
+        }
+        .value {
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #af5757;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+        }
+        .btn-edit {
+            background-color: #0bdceb80;
+            color: rgb(0, 0, 0);
+            padding: 10px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #001b35;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-edit:hover {
+            background-color: #03fff2;
+        }
+    
+        /* Styling the submit button */
+        input[type="submit"] {
+            background-color: #0bdceb80;
+            color: rgb(0, 0, 0);
+            padding: 10px 20px;
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for submit button */
+        input[type="submit"]:hover {
+            background-color: #03fff2;
+        }
+
+        /* Styling the file input button */
+        input[type="file"] {
+            background-color: #f8f8f8;
+            padding: 8px;
+            border: 2px solid #000000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Styling the file input button when selected */
+        input[type="file"]:focus {
+            border-color: #af5757;
+            outline: none;
+        }
+
+        /* Optionally, you can customize the text label of the file input button */
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: #868686;
+            color: rgb(253, 253, 253);
+            padding: 6px 12px;
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;           
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    
+        input[type="password"] {
+            width: auto;
+            padding: 10px 10px;
+            margin: 1px 0;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: #e3eefa;
+            transition: border 0.3s ease;
+        }
+        input[type="password"]:focus {
+            border: 1px solid #007bff;
+            outline: none;
+            background-color: #ffffff;
+        }
+    
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: left;
+            display: inline-block;
+            margin-bottom: 1px;
+            padding: 5px 10px;
+            background-color: #af5757;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #01ddec80;
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            font-size: 16px;
+            padding: 12px 25px;
+            border: 1px solid black;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #60fff7;
+        }
+        button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Welcome to Your Dashboard</h1>
+        <div class="logout">
+            <a href="{% url 'logout_view' %}">Logout</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <a href="{% url 'student_profile' %}">Profile</a>
+        <a href="{% url 'student_status' %}">Enrollment Status</a>
+        <a href="{% url 'student_requirements' %}">Requirements</a>
+        <a href="{% url 'student_schedule' %}">Class Schedule</a>
+        <a href="{% url 'student_account' %}">Account</a>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="container">
+        <div class="section">
+            <h2>Dashboard Overview</h2>
+            <p>Welcome to your student dashboard. Use the navigation above to manage your profile, check enrollment status, submit required documents, view your class schedule, and update account settings.</p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        form {
+            width: 50%;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .button-group button {
+            width: auto;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="enrollmentForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Student Enrollment Form</h2>
+
+        <!-- Button Selection for Student Type -->
+        <div class="section button-group">
+            <label>Select your student type</label>
+            <button type="button" id="new_student_button" name="new_student">New Student</button>
+            <button type="button" id="transferee_button" name="transferee_student">Transferee</button>
+        </div>
+
+        <!-- Hidden Input to Track Student Type -->
+        <input type="hidden" id="student_type" name="student_type" value="">
+
+        <!-- New Student Requirements -->
+        <div id="new_student_form" class="section hidden">
+            <h3>New Student Requirements</h3>
+            <label for="kindergarten_certificate">Upload Kindergarten Certificate of Completion (Photo)</label>
+            <input type="file" id="kindergarten_certificate" name="kindergarten_certificate" accept=".jpg,.png">
+        </div>
+
+        <!-- Transferee Requirements -->
+        <div id="transferee_form" class="section hidden">
+            <h3>Transferee Requirements</h3>
+            <label for="previous_school">Previous School Attended</label>
+            <input type="text" id="previous_school" name="previous_school">
+
+
+            <label for="transferee_report_card">Upload Report Card (Photo)</label>
+            <input type="file" id="transferee_report_card" name="transferee_report_card" accept=".jpg,.png">
+        </div>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Submit">
+    </form>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <script>
+        const newStudentButton = document.getElementById('new_student_button');
+        const transfereeButton = document.getElementById('transferee_button');
+        const studentTypeInput = document.getElementById('student_type');
+        const newStudentForm = document.getElementById('new_student_form');
+        const transfereeForm = document.getElementById('transferee_form');
+
+        // Set student_type and show/hide forms
+        newStudentButton.addEventListener('click', function () {
+            studentTypeInput.value = 'new';
+            newStudentForm.classList.remove('hidden');
+            transfereeForm.classList.add('hidden');
+        });
+
+        transfereeButton.addEventListener('click', function () {
+            studentTypeInput.value = 'transfer';
+            transfereeForm.classList.remove('hidden');
+            newStudentForm.classList.add('hidden');
+        });
+
+        // Debug log on form submission to confirm student type is set
+        document.getElementById('enrollmentForm').addEventListener('submit', function (event) {
+            console.log('Student Type on Submit:', studentTypeInput.value);
+        });
+    </script>
+</body>
+
+</html>

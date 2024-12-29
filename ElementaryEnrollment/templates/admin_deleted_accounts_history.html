@@ -1,0 +1,104 @@
+{% extends "admin_template.html" %}
+
+{% block title %}Deleted Accounts History{% endblock %}
+
+{% block styles %}
+<style>
+    /* Page-specific styling */
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        opacity: 0; /* Initial hidden state for fade-in effect */
+        transform: translateY(20px); /* Optional slide-up effect */
+        transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for fade and slide */
+    }
+    .container.fade-in {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Reset slide effect */
+    }
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    .back-btn {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+    }
+    .back-btn:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>History of Deleted Accounts</h3>
+
+    <table id="deletedAccountsTable">
+        <tr>
+            <th>Username</th>
+            <th>Date Created</th>
+            <th>Date Deleted</th>
+        </tr>
+    </table>
+
+    <div class="buttons">
+        <a class="back-btn" href="{% url 'admin_approved_rejected_History' %}">Back</a>
+    </div>
+</div>
+
+<script>
+    // Fade-in effect for the container on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-in'); // Trigger the fade-in effect
+    });
+
+    // Retrieve deleted accounts from localStorage
+    const deletedAccounts = JSON.parse(localStorage.getItem('deletedAccounts')) || [];
+    const deletedAccountsTable = document.getElementById('deletedAccountsTable');
+
+    // Populate the table with deleted accounts
+    deletedAccounts.forEach(account => {
+        const newRow = deletedAccountsTable.insertRow();
+        newRow.innerHTML = `
+            <td>${account.username}</td>
+            <td>${account.dateCreated}</td>
+            <td>${account.deletedDate}</td>
+        `;
+    });
+
+    // If no deleted accounts, display a message
+    if (deletedAccounts.length === 0) {
+        const noRecordsRow = deletedAccountsTable.insertRow();
+        noRecordsRow.innerHTML = `<td colspan="3" style="text-align:center;">No deleted accounts found.</td>`;
+    }
+</script>
+{% endblock %}

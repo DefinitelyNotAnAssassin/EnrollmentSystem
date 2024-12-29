@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requirements</title>
+    
+</head>
+<body>
+    {% extends 'student_template.html' %}
+
+    {% block title %}Student Profile{% endblock %}
+
+    {% block content %}
+
+    <div class="requirements-container">
+        <h2>Requirements</h2>
+        <form action="submit_requirements.php" method="POST" enctype="multipart/form-data">
+            <label for="form_138"><strong>Upload Form 138:</strong></label><br>
+            <input type="file" id="form_138" name="form_138" accept=".jpg,.png,.pdf" required><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>

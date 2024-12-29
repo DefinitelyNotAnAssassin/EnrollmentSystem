@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #007bff;
+        }
+        p {
+            margin: 8px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registration Form Details</h1>
+
+        <!-- Display Student Information -->
+        <h2><strong>Student Information:</strong></h2>
+        <p><strong>Name:</strong> {{ student_data.first_name }} {{ student_data.middle_name }} {{ student_data.last_name }}</p>
+        <p><strong>Birth Date:</strong> {{ student_data.birth_date }}</p>
+        <p><strong>Sex:</strong> {{ student_data.sex }}</p>
+        <p><strong>Email:</strong> {{ student_data.email }}</p>
+        <p><strong>Address:</strong> {{ student_data.street }}, {{ student_data.barangay }}, {{ student_data.city }}, {{ student_data.state_province }}, {{ student_data.country }}</p>
+
+        <!-- Display Mother's Information -->
+        <h2><strong>Mother's Information:</strong></h2>
+        <p><strong>Name:</strong> {{ mother_data.first_name }} {{ mother_data.middle_name }} {{ mother_data.last_name }}</p>
+        <p><strong>Birth Date:</strong> {{ mother_data.birth_date }}</p>
+        <p><strong>Occupation:</strong> {{ mother_data.occupation }}</p>
+        <p><strong>Contact No.:</strong> {{ mother_data.contact }}</p>
+        <p><strong>Address:</strong> {{ mother_data.street }}, {{ mother_data.barangay }}, {{ mother_data.city }}, {{ mother_data.state_province }}, {{ mother_data.country }}</p>
+
+        <!-- Display Father's Information -->
+        <h2><strong>Father's Information:</strong></h2>
+        <p><strong>Name:</strong> {{ father_data.first_name }} {{ father_data.middle_name }} {{ father_data.last_name }}</p>
+        <p><strong>Birth Date:</strong> {{ father_data.birth_date }}</p>
+        <p><strong>Occupation:</strong> {{ father_data.occupation }}</p>
+        <p><strong>Contact No.:</strong> {{ father_data.contact }}</p>
+        <p><strong>Address:</strong> {{ father_data.street }}, {{ father_data.barangay }}, {{ father_data.city }}, {{ father_data.state_province }}, {{ father_data.country }}</p>
+
+        <!-- Back link to go back to Manage Accounts -->
+        <a href="{% url 'admin_manage_accounts' %}" class="back-link">← Back to Manage Accounts</a>
+    </div>
+</body>
+</html>

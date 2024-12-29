@@ -1,0 +1,106 @@
+{% extends "admin_template.html" %}
+
+{% block title %}Set Enrollment Period{% endblock %}
+
+{% block styles %}
+<style>
+    /* Page-specific styling */
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        opacity: 0; /* Initial hidden state for fade-in effect */
+        transform: translateY(20px); /* Optional slide-up effect */
+        transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for fade and slide */
+    }
+    .container.fade-in {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Reset slide effect */
+    }
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    label {
+        font-weight: bold;
+        color: #495057;
+        display: block;
+        text-align: left;
+        margin-bottom: 8px;
+    }
+    input[type="date"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        font-size: 14px;
+    }
+    input[type="submit"] {
+        padding: 10px 20px;
+        background-color: #121c25;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .back-btn, .small-btn {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+    }
+    .back-btn:hover, .small-btn:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Set Enrollment Period</h3>
+    <form action="/set-enrollment" method="post">
+        {% csrf_token %}
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date"><br><br>
+        
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end-date"><br><br>
+        
+        <input type="submit" value="Set Enrollment Period">
+    </form>
+
+    <div class="buttons">
+        <a class="back-btn" href="{% url 'admin_dashboard' %}">Back</a>
+    </div>
+</div>
+
+<script>
+    // Fade-in effect for the container on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-in'); // Trigger the fade-in effect
+    });
+</script>
+{% endblock %}

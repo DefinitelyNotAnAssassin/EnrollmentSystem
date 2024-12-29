@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Requirements</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        /* Back Button */
+        .back-button {
+            background-color: #008CBA;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .back-button:hover {
+            background-color: #006f9a;
+        }
+        /* Document Container */
+        .document-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .document-section {
+            margin-bottom: 15px;
+        }
+        .document-section img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        a.download-link {
+            color: #008CBA;
+            text-decoration: none;
+        }
+        a.download-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'manage_enrollees' %}" class="back-button">Back to Manage Enrollees</a>
+    <div class="document-container">
+        <h2>Enrollment Requirements</h2>
+        <h3>Student: {{ enrollee.student.student_first_name }} {{ enrollee.student.student_last_name }}</h3>
+        
+        {% if is_new_student %}
+            <div class="document-section">
+                <p><strong>Kindergarten Certificate:</strong></p>
+                <a href="{{ enrollee.kindergarten_certificate.url }}" class="download-link">Download</a>
+                <img src="{{ enrollee.kindergarten_certificate.url }}" alt="Kindergarten Certificate">
+            </div>
+        {% else %}
+            <div class="document-section">
+                <p><strong>Previous School:</strong> {{ enrollee.previous_school }}</p>
+                <p><strong>Transfer Reason:</strong> {{ enrollee.transfer_reason }}</p>
+                <p><strong>Grade Level:</strong> {{ enrollee.grade_level }}</p>
+                <p><strong>Transferee Report Card:</strong></p>
+                <a href="{{ enrollee.transferee_report_card.url }}" class="download-link">Download</a>
+                <img src="{{ enrollee.transferee_report_card.url }}" alt="Transferee Report Card">
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

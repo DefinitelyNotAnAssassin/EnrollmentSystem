@@ -1,0 +1,122 @@
+{% extends "admin_template.html" %}
+
+{% block title %}View and Edit Student Records{% endblock %}
+
+{% block styles %}
+<style>
+    /* Page-specific styling */
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0; /* Initial hidden state for fade-in effect */
+        transform: translateY(20px); /* Optional slide-up effect */
+        transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for fade and slide */
+    }
+    .container.fade-in {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Reset slide effect */
+    }
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    .view-btn {
+        padding: 5px 10px;
+        background-color: #378a61;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .view-btn:hover {
+        background-color: #208b3b;
+    }
+    .back-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3c4a57;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        margin-top: 10px;
+    }
+    .back-btn:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>View and Edit Student Records</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Grade Level</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>John Marcus</td>
+                <td>Grade 3</td>
+                <td>Enrolled</td>
+                <td>
+                    <button class="view-btn" onclick="openViewModal('John Marcus', 'Grade 3', 'Enrolled')">View Record</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Jane Escudo</td>
+                <td>Grade 4</td>
+                <td>Not Enrolled</td>
+                <td>
+                    <button class="view-btn" onclick="openViewModal('Jane Escudo', 'Grade 4', 'Not Enrolled')">View Record</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Left-Aligned Back Button -->
+    <a class="back-btn" href="{% url 'admin_dashboard' %}">Back</a>
+</div>
+
+<!-- JavaScript for Modal Functions (if needed) -->
+<script>
+    // Fade-in effect for the container on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-in'); // Trigger the fade-in effect
+    });
+
+    function openViewModal(name, grade, status) {
+        // Your modal opening logic here
+        alert(`Viewing record for ${name}, ${grade}, ${status}`);
+    }
+</script>
+{% endblock %}

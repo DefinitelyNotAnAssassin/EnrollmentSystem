@@ -1,0 +1,171 @@
+{% extends "admin_template.html" %}
+
+{% block title %}Admin Manage Accounts{% endblock %}
+
+{% block styles %}
+<style>
+    /* Page-specific styling */
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0; /* Initial hidden state for transition */
+        transform: translateY(20px); /* Optional slide effect */
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .container.fade-in {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Reset slide effect */
+    }
+    h2 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .btn { padding: 10px 20px; font-size: 14px; cursor: pointer; border-radius: 5px; border: none; }
+    .btn-add { background-color: #2c3946; color: white; }
+    .btn-approve { background-color: #28a745; color: white; }
+    .btn-reject { background-color: #dc3545; color: white; }
+    .filter-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
+    .search-bar { padding: 8px; width: 200px; border: 1px solid #ddd; border-radius: 4px; }
+    .modal, .modal-form {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        width: 300px;
+        z-index: 1000;
+    }
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+    .modal-close { float: right; cursor: pointer; font-size: 18px; color: #aaa; }
+    .messages { width: 90%; max-width: 1200px; margin: 20px auto; padding: 10px; border-radius: 5px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1); }
+    .messages p { margin: 0; padding: 10px; border-radius: 4px; font-size: 14px; font-weight: bold; }
+    .messages .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Manage Accounts</h2>
+
+    <!-- Single button to open the modal for adding a new registrar -->
+    <button class="btn btn-add" onclick="openModal('addRegistrarModal')">Add Registrar Account</button>
+
+    <!-- Filter and Search Form -->
+    <form method="get" action="{% url 'admin_manage_accounts' %}" class="filter-container">
+        <div>
+            <label for="sort">Sort by:</label>
+            <select id="sort" name="sort">
+                <option value="date" {% if request.GET.sort == 'date' %}selected{% endif %}>Date</option>
+                <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name</option>
+            </select>
+        </div>
+        <div>
+            <input type="text" name="search" class="search-bar" placeholder="Search by name..." value="{{ request.GET.search }}">
+            <button type="submit" class="btn">Filter</button>
+        </div>
+    </form>
+
+    <!-- Table of accounts -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Registration Form</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td>{{ account.date_joined|date:"Y-m-d" }}</td>
+                        <td>{{ account.last_name }}, {{ account.first_name }}</td>
+                        <td><a href="{% url 'view_registration_form' account.id %}" target="_blank">View Registration Form</a></td>
+                        <td>
+                            <button id="approveBtn-{{ account.id }}" class="btn btn-approve" onclick="confirmAction('{{ account.id }}', 'approve')">Approve</button>
+                            <button id="rejectBtn-{{ account.id }}" class="btn btn-reject" onclick="confirmAction('{{ account.id }}', 'reject')">Reject</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Overlay -->
+<div id="modalOverlay" class="modal-overlay" onclick="closeModal()"></div>
+
+<!-- Modal for Adding Registrar -->
+<div id="addRegistrarModal" class="modal modal-form">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <h3>Add Registrar Account</h3>
+    <form method="POST" action="{% url 'add_registrar' %}">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Add Account</button>
+    </form>
+    
+</div>
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <p class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+    // Fade-in effect for the container on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const container = document.querySelector('.container');
+        container.classList.add('fade-in'); // Trigger the fade-in effect
+    });
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+        document.getElementById("modalOverlay").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("addRegistrarModal").style.display = "none";
+        document.getElementById("modalOverlay").style.display = "none";
+    }
+
+    function confirmAction(studentId, actionType) {
+        if (actionType === 'reject') {
+            if (confirm("Are you sure you want to reject this account?")) {
+                window.location.href = `/reject_account/${studentId}/`;
+            }
+        } else {
+            window.location.href = `/approve_account/${studentId}/`;
+        }
+    }
+</script>
+{% endblock %}

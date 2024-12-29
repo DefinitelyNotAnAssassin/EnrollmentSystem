@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Enrollees{% endblock %}
+{% block header %}Manage Enrollees{% endblock %}
+{% block content %}
+<a href="{% url 'registrar_dashboard' %}" class="back-button">Back to Dashboard</a>
+<h2>Manage Enrollees (Pending Enrollment)</h2>
+
+<!-- Filter and Search Form -->
+<form method="get" style="margin-bottom: 20px;">
+    <label for="grade_level">Filter by Grade Level:</label>
+    <select name="grade_level" id="grade_level" onchange="this.form.submit()">
+        <option value="All Grades" {% if grade_level == "All Grades" %}selected{% endif %}>All Grades</option>
+        {% for grade in grades %}
+            <option value="{{ grade }}" {% if grade_level == grade %}selected{% endif %}>Grade {{ grade }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="search_query" placeholder="Search by Student Name" value="{{ request.GET.search_query }}">
+    <button type="submit">Search</button>
+</form>
+
+<!-- Enrollees Table -->
+<table id="enrolleesTable" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Grade Level</th>
+            <th>Section</th>
+            <th>Requirements</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in enrollees %}
+        <tr>
+            <td>{{ student.first_name }} {{ student.last_name }}</td>
+            <td>
+                <select name="grade_level" onchange="updateGradeLevel({{ student.id }}, this.value)">
+                    {% for grade in grades %}
+                        <option value="{{ grade }}" {% if student.grade_level == grade %}selected{% endif %}>Grade {{ grade }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <span id="section-{{ student.id }}">
+                    {% if student.section %}
+                        {{ student.section }}
+                    {% else %}
+                        Not Assigned
+                    {% endif %}
+                </span>
+                <button onclick="assignSection({{ student.id }})">Assign</button>
+            </td>
+            <td><a href="javascript:void(0)" onclick="viewStudentInfo({{ student.id }})">View Information</a></td>
+            <td>
+                <form action="{% url 'accept_enrollment' student.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Accept</button>
+                </form>
+                <form action="{% url 'reject_enrollment' student.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No pending enrollees found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Student Information Modal -->
+<div id="studentInfoModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Student Information</h3>
+        <button onclick="closeModal()" class="close-button">Close</button>
+        <div id="studentInfoContent" class="student-info-table">
+            <!-- Student details will be populated here via AJAX -->
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Modal Centering, Styling, and Table Layout -->
+<style>
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        text-align: left;
+        position: relative;
+        font-size: 16px;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff3333;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .close-button:hover {
+        background: #cc0000;
+    }
+
+    .student-info-table {
+        margin-top: 20px;
+    }
+
+    .student-info-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .student-info-table th,
+    .student-info-table td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    .student-info-table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+</style>
+
+<!-- AJAX Script to handle grade level, section assignment, and load student info -->
+<script>
+    function updateGradeLevel(studentId, gradeLevel) {
+        if (confirm("Are you sure you want to set the grade level?")) {
+            fetch(`/update_grade_level/${studentId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `grade_level=${gradeLevel}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            location.reload();
+        }
+    }
+
+    function assignSection(studentId) {
+        if (confirm("Are you sure you want to assign a random section?")) {
+            fetch(`/assign_section/${studentId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`section-${studentId}`).innerText = data.section;
+                } else {
+                    alert(data.message || 'Failed to assign section');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function viewStudentInfo(studentId) {
+        fetch(`/get_student_info/${studentId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const studentInfoContent = document.getElementById('studentInfoContent');
+                
+                // Display all details in a structured format
+                studentInfoContent.innerHTML = `
+                    <table>
+                        <tr><th>Name</th><td>${data.first_name} ${data.last_name}</td></tr>
+                        <tr><th>Birth Date</th><td>${data.birth_date || 'N/A'}</td></tr>
+                        <tr><th>Contact</th><td>${data.email || 'N/A'}</td></tr>
+                        <tr><th>Address</th><td>${data.address || 'N/A'}</td></tr>
+                        <tr><th>Enrollment Status</th><td>${data.enrollment_status || 'N/A'}</td></tr>
+                        <tr><th>Grade Level</th><td>${data.grade_level || 'N/A'}</td></tr>
+                        <tr><th>Section</th><td>${data.section || 'N/A'}</td></tr>
+                        <tr><th>Uploaded Requirements</th><td>${data.requirements}</td></tr>
+                        <tr><th>Mother's Information</th>
+                            <td>
+                                <strong>Name:</strong> ${data.mother_info?.name || 'N/A'}<br>
+                                <strong>Contact:</strong> ${data.mother_info?.contact || 'N/A'}<br>
+                                <strong>Occupation:</strong> ${data.mother_info?.occupation || 'N/A'}<br>
+                                <strong>Address:</strong> ${data.mother_info?.address || 'N/A'}
+                            </td>
+                        </tr>
+                        <tr><th>Father's Information</th>
+                            <td>
+                                <strong>Name:</strong> ${data.father_info?.name || 'N/A'}<br>
+                                <strong>Contact:</strong> ${data.father_info?.contact || 'N/A'}<br>
+                                <strong>Occupation:</strong> ${data.father_info?.occupation || 'N/A'}<br>
+                                <strong>Address:</strong> ${data.father_info?.address || 'N/A'}
+                            </td>
+                        </tr>
+                        <tr><th>Additional Documents</th><td>${data.documents.map(doc => `<a href="${doc.url}" target="_blank">${doc.file_name}</a>`).join('<br>') || 'No additional documents uploaded'}</td></tr>
+                    </table>
+                `;
+                
+                document.getElementById('studentInfoModal').style.display = 'flex';
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function closeModal() {
+        document.getElementById('studentInfoModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    
+</head>
+<body>
+    {% extends 'student_template.html' %}
+
+    {% block title %}Student Profile{% endblock %}
+
+    {% block content %}
+
+    <div class="schedule-container">
+        <h2>Class Schedule</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Teacher</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- No data here; table is empty and ready to be populated dynamically -->
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Form Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Filled Enrollment Form</h2>
+
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td>Student Type</td>
+            <td>New Student / Transferee</td> <!-- Display selected student type dynamically -->
+        </tr>
+        <tr>
+            <td>Kindergarten Certificate (for New Student)</td>
+            <td>Uploaded File (filename.jpg or filename.png)</td> <!-- Display uploaded file name -->
+        </tr>
+        <tr>
+            <td>Previous School Attended (for Transferee)</td>
+            <td>Previous School Name</td> <!-- Display input text for previous school -->
+        </tr>
+        <tr>
+            <td>Applying Grade Level</td>
+            <td>Grade 1 - Grade 6</td> <!-- Display selected grade level -->
+        </tr>
+        <tr>
+            <td>Report Card (for Transferee)</td>
+            <td>Uploaded File (filename.jpg or filename.png)</td> <!-- Display uploaded file name -->
+        </tr>
+    </table>
+
+</body>
+</html>

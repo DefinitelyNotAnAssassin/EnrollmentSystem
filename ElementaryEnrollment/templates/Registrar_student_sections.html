@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Student Sections{% endblock %}
+
+{% block content %}
+    <h2>Student Sections by Grade Level</h2>
+
+    <!-- Loop through grade sections to display students by grade and section -->
+    {% for grade, sections in paginated_grade_sections.items %}
+        <h3>Grade {{ grade }}</h3>
+        {% for section, students in sections.items %}
+            <h4>Section {{ section }}</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="student-id">Student I.D.</th>
+                        <th>Student Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td class="student-id">{{ student.id }}</td>
+                            <td>{{ student.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if current_page > 1 %}
+            <button onclick="window.location.href='?page={{ current_page|add:-1 }}'">Previous</button>
+        {% endif %}
+        
+        {% if current_page < total_pages %}
+            <button onclick="window.location.href='?page={{ current_page|add:1 }}'">Next</button>
+        {% endif %}
+    </div>
+
+    <!-- Back to Dashboard Button -->
+    <a href="{% url 'registrar_dashboard' %}" class="back-button">Back to Dashboard</a>
+{% endblock %}

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #eb4a3e;
+        }
+        h2 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #007bff;
+            font-size: 22px;
+        }
+        .name-fields, .two-columns, .two-columns-contact-occupation {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Four columns for name row */
+            grid-column-gap: 20px;
+            margin-bottom: 25px;
+        }
+        .address-fields {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Five columns for address row */
+            grid-column-gap: 20px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #530a0a;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group select,
+        .form-group textarea {
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #4d0000;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .form-group input[type="date"] {
+            cursor: pointer;
+        }
+        .form-group textarea {
+            resize: none; /* Make address non-adjustable */
+            height: 20px; /* Fixed height for address field */
+        }
+        .submit-btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .submit-btn {
+            padding: 15px 40px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Registration Form</h1>
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'registration' %}">
+        {% csrf_token %}
+
+        <!-- Student Information Section -->
+        <h2>Student Information</h2>
+        <div class="name-fields">
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                {{ student_form.last_name }}
+            </div>
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                {{ student_form.first_name }}
+            </div>
+            <div class="form-group">
+                <label for="middle_name">Middle Name:</label>
+                {{ student_form.middle_name }}
+            </div>
+            <div class="form-group">
+                <label for="suffix">Suffix:</label>
+                {{ student_form.suffix }}
+            </div>
+        </div>
+
+        <div class="two-columns">
+            <div class="form-group">
+                <label for="birth_date">Birth Date:</label>
+                {{ student_form.birth_date }}
+            </div>
+            <div class="form-group">
+                <label for="sex">Sex:</label>
+                {{ student_form.sex }}
+            </div>
+        </div>
+
+        <div class="form-group full-width">
+            <label for="email">Email:</label>
+            {{ student_form.email }}
+        </div>
+
+        <div class="address-fields">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                {{ student_form.street }}
+            </div>
+            <div class="form-group">
+                <label for="barangay">Barangay:</label>
+                {{ student_form.barangay }}
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                {{ student_form.city }}
+            </div>
+            <div class="form-group">
+                <label for="state_province">State/Province:</label>
+                {{ student_form.state_province }}
+            </div>
+            <div class="form-group">
+                <label for="country">Country:</label>
+                {{ student_form.country }}
+            </div>
+        </div>
+
+        <!-- Mother's Information Section -->
+        <h2>Mother's Information</h2>
+        <div class="name-fields">
+            <div class="form-group">
+                <label for="mother_last_name">Last Name:</label>
+                {{ mother_form.last_name }}
+            </div>
+            <div class="form-group">
+                <label for="mother_first_name">First Name:</label>
+                {{ mother_form.first_name }}
+            </div>
+            <div class="form-group">
+                <label for="mother_middle_name">Middle Name:</label>
+                {{ mother_form.middle_name }}
+            </div>
+        </div>
+
+        <div class="two-columns-contact-occupation">
+            <div class="form-group">
+                <label for="birth_date">Birth Date:</label>
+                {{ mother_form.birth_date }}
+            </div>
+            <div class="form-group">
+                <label for="mother_contact">Contact:</label>
+                {{ mother_form.contact }}
+            </div>
+            <div class="form-group">
+                <label for="occupation">Occupation:</label>
+                {{ mother_form.occupation }}
+            </div>
+        </div>
+
+        <div class="address-fields">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                {{ mother_form.street }}
+            </div>
+            <div class="form-group">
+                <label for="barangay">Barangay:</label>
+                {{ mother_form.barangay }}
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                {{ mother_form.city }}
+            </div>
+            <div class="form-group">
+                <label for="state_province">State/Province:</label>
+                {{ mother_form.state_province }}
+            </div>
+            <div class="form-group">
+                <label for="country">Country:</label>
+                {{ mother_form.country }}
+            </div>
+        </div>
+
+        <!-- Father's Information Section -->
+        <h2>Father's Information</h2>
+        <div class="name-fields">
+            <div class="form-group">
+                <label for="father_last_name">Last Name:</label>
+                {{ father_form.last_name }}
+            </div>
+            <div class="form-group">
+                <label for="father_first_name">First Name:</label>
+                {{ father_form.first_name }}
+            </div>
+            <div class="form-group">
+                <label for="father_middle_name">Middle Name:</label>
+                {{ father_form.middle_name }}
+            </div>
+        </div>
+
+        <div class="two-columns-contact-occupation">
+            <div class="form-group">
+                <label for="birth_date">Birth Date:</label>
+                {{ father_form.birth_date }}
+            </div>
+            <div class="form-group">
+                <label for="father_contact">Contact:</label>
+                {{ father_form.contact }}
+            </div>
+            <div class="form-group">
+                <label for="occupation">Occupation:</label>
+                {{ father_form.occupation }}
+            </div>
+        </div>
+
+        <div class="address-fields">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                {{ father_form.street }}
+            </div>
+            <div class="form-group">
+                <label for="barangay">Barangay:</label>
+                {{ father_form.barangay }}
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                {{ father_form.city }}
+            </div>
+            <div class="form-group">
+                <label for="state_province">State/Province:</label>
+                {{ father_form.state_province }}
+            </div>
+            <div class="form-group">
+                <label for="country">Country:</label>
+                {{ father_form.country }}
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <h2>Additional Documents</h2>
+        <div class="form-group-file">
+            <label for="fileUploaded">Upload PSA (Birth Certificate):</label>
+            {{ document_form.file_uploaded }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-btn-container">
+            <button type="submit" class="submit-btn">Submit</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrollment Status</title>
+    
+</head>
+<body>
+    {% extends 'student_template.html' %}
+
+    {% block title %}Enrollment Status{% endblock %}
+
+    {% block content %}
+
+    <div class="status-container">
+        <h2>Enrollment Status</h2>
+        <p><span class="label">Grade Level:</span> <span class="value">{{ passed_grades }}</span></p>
+        <p><span class="label">School Year:</span> <span class="value">{{ school_year }}</span></p>
+        <p><span class="label">Status:</span> <span class="value">{{ status }}</span></p>
+    </div>
+    
+    {% endblock %}
+</body>
+</html>

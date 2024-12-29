@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejected Forms</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+        a:hover {
+            background-color: #45a049;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Button container */
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px; /* Space between Back and Back to Dashboard buttons */
+        }
+
+        /* Back to Dashboard and Back button styles */
+        .back-button, .back-enrolled-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .back-button:hover, .back-enrolled-button:hover {
+            background-color: #006f9a;
+        }
+
+        /* Style for "View" links */
+        td a {
+            color: white;
+            background-color: #4CAF50;
+            padding: 5px 10px;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Rejected Forms</h3>
+
+        <!-- Filter Section -->
+        <div class="filter-container">
+            <label for="gradeFilter">Grade Level:</label>
+            <select id="gradeFilter">
+                <option value="">All</option>
+                <option value="Grade 4">Grade 4</option>
+                <option value="Grade 5">Grade 5</option>
+            </select>
+
+            <label for="dateFilter">Date:</label>
+            <input type="date" id="dateFilter">
+        </div>
+
+        <table id="recordsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Grade Level</th>
+                    <th>Registration Form</th>
+                    <th>Documents</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Marcus</td>
+                    <td>Grade 5</td>
+                    <td><a href="#">View Registration Form</a></td>
+                    <td><a href="#">View Documents</a></td>
+                    <td>Incomplete details</td>
+                    <td>2024-09-20</td>
+                </tr>
+                <tr>
+                    <td>Jane Escudo</td>
+                    <td>Grade 4</td>
+                    <td><a href="#">View Registration Form</a></td>
+                    <td><a href="#">View Documents</a></td>
+                    <td>Missing signature</td>
+                    <td>2024-09-21</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Button container -->
+    <div class="button-container">
+        <!-- Back Button -->
+        <a href="{% url 'manage_enrollees' %}" class="back-enrolled-button">Back</a>
+        
+        <!-- Back to Dashboard Button -->
+        <a href="{% url 'registrar_dashboard' %}" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Get filter elements
+        const gradeFilter = document.getElementById('gradeFilter');
+        const dateFilter = document.getElementById('dateFilter');
+        const table = document.getElementById('recordsTable');
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        // Filter function
+        function filterRecords() {
+            const grade = gradeFilter.value;
+            const date = dateFilter.value;
+
+            for (let i = 0; i < rows.length; i++) {
+                const gradeText = rows[i].getElementsByTagName('td')[1].textContent;
+                const dateText = rows[i].getElementsByTagName('td')[5].textContent;
+
+                let gradeMatch = (grade === '' || gradeText === grade);
+                let dateMatch = (date === '' || dateText === date);
+
+                if (gradeMatch && dateMatch) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        // Add event listeners to filters
+        gradeFilter.addEventListener('change', filterRecords);
+        dateFilter.addEventListener('change', filterRecords);
+    </script>
+</body>
+</html>

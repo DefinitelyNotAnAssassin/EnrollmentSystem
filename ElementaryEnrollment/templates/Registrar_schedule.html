@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Schedule Maker{% endblock %}
+
+{% block header %}Schedule Manager{% endblock %}
+
+{% block content %}
+<div class="schedule-maker">
+    <h2>Schedule Maker (7:00 AM - 12:00 PM)</h2>
+
+    <!-- JavaScript to handle section filtering -->
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            // Excluded grade-section pairs as passed from the Django context
+            const excludedGradeSections = {{ excluded_grade_sections|safe }};
+            
+            // Function to update sections based on selected grade level
+            function updateSections() {
+                const gradeLevel = document.getElementById("grade_level").value;
+                const sectionSelect = document.getElementById("section");
+                
+                // Clear all current options
+                sectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+                // Loop through sections and add only those not excluded for the selected grade level
+                ["A", "B", "C", "D", "E"].forEach(section => {
+                    if (!excludedGradeSections.includes([gradeLevel, section].join("-"))) {
+                        const option = document.createElement("option");
+                        option.value = section;
+                        option.text = `Section ${section}`;
+                        sectionSelect.appendChild(option);
+                    }
+                });
+            }
+
+            // Event listener for grade level change
+            document.getElementById("grade_level").addEventListener("change", updateSections);
+        });
+    </script>
+
+    <form method="post" action="{% url 'registrar_schedule' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="grade_level">Select Grade Level:</label>
+            <select id="grade_level" name="grade_level" required>
+                <option value="">Select Grade Level</option>
+                <option value="1">Grade 1</option>
+                <option value="2">Grade 2</option>
+                <option value="3">Grade 3</option>
+                <option value="4">Grade 4</option>
+                <option value="5">Grade 5</option>
+                <option value="6">Grade 6</option>
+            </select>
+
+            <label for="section">Select Section:</label>
+            <select id="section" name="section" required>
+                <option value="">Select Section</option>
+                <!-- Sections will be dynamically populated by JavaScript based on grade level selection -->
+            </select>
+        </div>
+
+        <h3>Weekly Schedule</h3>
+        <table border="1">
+            <tr>
+                <th>Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+            {% for idx, time in time_intervals %}
+            <tr>
+                <td>{{ time }}</td>
+                <td>
+                    <select name="mon_{{ idx }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select name="tue_{{ idx }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select name="wed_{{ idx }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select name="thu_{{ idx }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select name="fri_{{ idx }}">
+                        <option value="">Select Subject</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <button type="submit">Save Schedule</button>
+        <button type="submit" name="action" value="set_random" class="btn-secondary">Set Random</button>
+    </form>
+
+    <!-- Combined Form for Retrieve and Delete Schedule -->
+    <form method="get" action="{% url 'registrar_schedule' %}" style="margin-top: 20px;">
+        <div class="form-group">
+            <label for="retrieve_grade_level">Grade Level:</label>
+            <select id="retrieve_grade_level" name="grade_level" required>
+                <option value="">Select Grade Level</option>
+                <option value="1">Grade 1</option>
+                <option value="2">Grade 2</option>
+                <option value="3">Grade 3</option>
+                <option value="4">Grade 4</option>
+                <option value="5">Grade 5</option>
+                <option value="6">Grade 6</option>
+            </select>
+            <label for="retrieve_section">Section:</label>
+            <select id="retrieve_section" name="section" required>
+                <option value="">Select Section</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+                <option value="E">Section E</option>
+            </select>
+        </div>
+        <button type="submit" name="action" value="retrieve" class="btn-primary">Retrieve Data</button>
+        <button type="submit" name="action" value="delete" class="btn-danger">Delete Schedule</button>
+    </form>
+
+    <!-- Table to Display Retrieved Schedule Data -->
+    <div style="margin-top: 20px;">
+        <h3>Retrieved Schedule Data</h3>
+        <table border="1">
+            <tr>
+                <th>Time</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+            {% if retrieved_schedule %}
+                {% for time, day_data in retrieved_schedule.items %}
+                <tr>
+                    <td>{{ time }}</td>
+                    <td>{{ day_data.mon }}</td>
+                    <td>{{ day_data.tue }}</td>
+                    <td>{{ day_data.wed }}</td>
+                    <td>{{ day_data.thu }}</td>
+                    <td>{{ day_data.fri }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">No data available. Please retrieve schedule data based on grade level and section.</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
