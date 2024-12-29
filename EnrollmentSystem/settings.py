@@ -29,7 +29,10 @@ SECRET_KEY = 'django-insecure-2qa)v%i170kh$5$wvpw!0ry$mu$1c#ky08ywy)2zx27af0o@&w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    
+]
 
 
 # Application definition
@@ -140,7 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'ElementaryEnrollment/static']
+STATIC_ROOT = BASE_DIR / 'static'  
 
 # Media files (Uploaded documents and images)
 import os
